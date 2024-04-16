@@ -1,14 +1,12 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:neuro_task/constant/my_text.dart';
 import 'package:neuro_task/constant/narration_text.dart';
-import 'package:neuro_task/constant/responsive.dart';
 import 'package:neuro_task/pages/homepage.dart';
 import 'package:flutter_sound/flutter_sound.dart';
-import 'package:neuro_task/services/narration_services.dart';
-import 'package:neuro_task/ui/game/narration_start_message.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:just_audio/just_audio.dart';
@@ -74,37 +72,37 @@ class _NarrationRecordingState extends State<NarrationRecording> {
 
   Widget voiceIcon(){
     if(!_isRecording){
-      return const Icon(
+      return Icon(
         CupertinoIcons.waveform,
-        //size: 150.sp,
+        size: 150.sp,
         color: Colors.white,
       );
     }
     else if(_latestReading!.maxDecibel>= 56 && _latestReading!.maxDecibel>= 70){
-      return const Icon(
+      return Icon(
         CupertinoIcons.speaker_1_fill,
-        size: 150,
+        size: 150.sp,
         color: Colors.green,
       );
     }
     else if(_latestReading!.maxDecibel> 70 && _latestReading!.maxDecibel>= 89){
-      return const Icon(
+      return Icon(
         CupertinoIcons.speaker_2_fill,
-        size: 150,
+        size: 150.sp,
         color: Colors.green,
       );
     }
     else if(_latestReading!.maxDecibel>= 90){
-      return const Icon(
+      return Icon(
         CupertinoIcons.volume_up,
-        size: 150,
+        size: 150.sp,
         color: Colors.green,
       );
     }
     else{
-      return const Icon(
+      return Icon(
         CupertinoIcons.volume_off,
-        size: 150,
+        size: 150.sp,
         color: Colors.red,
       );
     }
@@ -200,17 +198,12 @@ Future<void> _playRecordedAudio() async {
   }
 
   int count = 0;
-  double screenHeight = 0.0,screenWidth = 0.0;
 
   @override
   Widget build(BuildContext context) {
-    double height = Responsive.screenHeight(context);
-    double width = Responsive.screenWidth(context);
-    screenHeight = height;
-    screenWidth = width;
     return Container(
-      height: height * 1,
-      width: width * 1,
+      height: double.maxFinite.h,
+      width: double.maxFinite.w,
       color: Colors.transparent,
       child: SingleChildScrollView(
         child: Column(
@@ -222,100 +215,78 @@ Future<void> _playRecordedAudio() async {
                   onPressed: (){
                     Get.to(const HomePage());
                   },
-                  child: Text("Back",
+                  child: const Text("Back",
                     style: TextStyle(
-                      fontSize: (width / Responsive.designWidth) * 30,
-                      color: const Color.fromARGB(166, 207, 207, 11),
+                      fontSize: 20,
+                      color: Color.fromARGB(166, 207, 207, 11),
                     ),
                   )
                 ),
-                InkWell(
-                onTap: (){
-                  NarrationStartMessage.startMessage(context);
-                },
-                  child: Container(
-                  height: height * 0.05,
-                  width: width * 0.1,
-                  color: Colors.transparent,
-                  child: const FittedBox(
-                    child: Icon(CupertinoIcons.info,color: Color.fromARGB(166, 207, 207, 11),),
-                  ),
-                  ),
-                ),
                 TextButton(
                   onPressed: (){
-                    _stopPlaying();
-                    if(_filePath != null && _filePath!.isNotEmpty){
-                      NarrationServices.sendAudioToDatabase(_filePath!);
-                    }
+                    Get.to(const HomePage());
                   },
-                  child: Text("Submit",
-                  style: TextStyle(
-                      fontSize: (width/Responsive.designWidth) * 30,
-                      color: const Color.fromARGB(166, 207, 207, 11),
-                      ),
+                  child: const Text("Submit",
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Color.fromARGB(166, 207, 207, 11),
+                    ),
                   )
                 ),
               ],
             ),
-            SizedBox(height: height * 0.05),
-            const MyText(text: "Narration", size: 20, bold: true, color: Colors.white,height: 0.05,width: 1),
-            SizedBox(height: height * 0.02),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            //   children: [
-            //     Column(
-            //       children: [
-            //         Icon(
-            //           Icons.info_outline,
-            //           size: 150.sp,
-            //           color: Colors.white,
-            //         ),
-            //         SizedBox(height: 50.h),
-            //         MyText(text: "Info", size: 70.sp, overflow: false, bold: true, color: Colors.white),
-            //       ],
-            //     ),
-            //     Column(
-            //       children: [
-            //         voiceIcon(),
-            //         SizedBox(height: 50.h),
-            //         MyText(text: 'Voice Level', size: 70.sp, overflow: true, bold: true, color: Colors.white),
-            //       ],
-            //     ),
-            //     Column(
-            //       children: [
-            //         Icon(
-            //           CupertinoIcons.clock,
-            //           size: 150.sp,
-            //           color: Colors.white,
-            //         ),
-            //         SizedBox(height: 50.h),
-            //         MyText(text: second.toString(), size: 70.sp, overflow: false, bold: true, color: Colors.white),
-            //       ],
-            //     ),
-            //   ],
-            // ),
+            SizedBox(height: 50.h),
+            MyText(text: "Narration", size: 80.sp, overflow: false, bold: true, color: Colors.white),
+            SizedBox(height: 50.h),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Column(
+                  children: [
+                    Icon(
+                      Icons.info_outline,
+                      size: 150.sp,
+                      color: Colors.white,
+                    ),
+                    SizedBox(height: 50.h),
+                    MyText(text: "Info", size: 70.sp, overflow: false, bold: true, color: Colors.white),
+                  ],
+                ),
+                Column(
+                  children: [
+                    voiceIcon(),
+                    SizedBox(height: 50.h),
+                    MyText(text: 'Voice Level', size: 70.sp, overflow: true, bold: true, color: Colors.white),
+                  ],
+                ),
+                Column(
+                  children: [
+                    Icon(
+                      CupertinoIcons.clock,
+                      size: 150.sp,
+                      color: Colors.white,
+                    ),
+                    SizedBox(height: 50.h),
+                    MyText(text: second.toString(), size: 70.sp, overflow: false, bold: true, color: Colors.white),
+                  ],
+                ),
+              ],
+            ),
             (recordState) ? Container(
-              height: height * 0.9,
-              width: width * 1,
+              height: 1550.h,
+              width: double.maxFinite.w,
               color: Colors.transparent,
               child: Column(
                 children: [
-                  SizedBox(height: height * 0.1),
+                  SizedBox(height: 300.h),
                   Container(
-                    height:height * 0.4,
-                    width: width * 1,
+                    height: 500.h,
+                    width: double.maxFinite.w,
                     color: Colors.transparent,
-                    margin: EdgeInsets.symmetric(horizontal: width * 0.03),
-                    child: Text(NarrationText.text,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: (width/Responsive.designWidth) * 30,
-                      ),
-                    )
+                    margin: EdgeInsets.symmetric(horizontal: 30.w),
+                    child: Center(child: MyText(text: NarrationText.text, size: 60.sp, overflow: false, bold: false, color: Colors.white)),
                   ),
-                  SizedBox(height: height * 0.06),
+                  SizedBox(height: 400.h),
                   ElevatedButton(
                     onPressed: (){
                       setState(() {
@@ -323,8 +294,8 @@ Future<void> _playRecordedAudio() async {
                         recordState = false;
                         recorded = true;
                         second = 0;
-                        //stop();
-                        //stopNoise();
+                        stop();
+                        stopNoise();
                       });
                       setState(() {
                         
@@ -334,30 +305,28 @@ Future<void> _playRecordedAudio() async {
                       backgroundColor: MaterialStatePropertyAll(Colors.pink),
                     ),
                     child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: height * 0.015,horizontal: width * 0.05),
-                      child: const MyText(text: "Stop recording", size: 20, bold: true, color: Colors.white,height: 0.05,width: 0.4,)
+                      padding: EdgeInsets.symmetric(vertical: 30.h,horizontal: 100.w),
+                      child: MyText(text: "Stop recording", size: 50.sp, overflow: false, bold: true, color: Colors.white)
                     ),
                   ),
                 ],
               ),
             )
             : Container(
-              height: height * 0.8,
-              width: width * 1,
               color: Colors.transparent,
               child: Column(
                 children: [
-                  SizedBox(height: height * 0.2),
+                  SizedBox(height: 200.h),
                   (recorded && (_filePath != null && _filePath!.isNotEmpty))? Container(
-                    height: height * 0.07,
-                    width: width * 0.8,
+                    height: 120.h,
+                    width: 900.w,
                     decoration: BoxDecoration(
                       color: Colors.white70,
-                      borderRadius:BorderRadius.all(Radius.circular((width/Responsive.designWidth) * 50)),
+                      borderRadius: BorderRadius.all(Radius.circular(50.sp)),
                     ),
                     child: Row(
                       children: [
-                        SizedBox(width: width * 0.03),
+                        SizedBox(width: 30.w),
                         GestureDetector(
                           onTap: (){
                             _isPlaying ? _stopPlaying() : _playRecordedAudio();
@@ -367,22 +336,22 @@ Future<void> _playRecordedAudio() async {
                           },
                           child: Icon(
                             (_isPlaying)? Icons.stop : Icons.play_arrow,
-                            size: (width/Responsive.designWidth) * 40,
+                            size: 110.sp,
                             color: Colors.black.withOpacity(0.8),
                           ),
                         ),
-                        SizedBox(width: width * 0.03),
-                        MyText(text: (_isPlaying ? "Playing...." : "Play audio"), size: 30,bold: false, color: Colors.black,height: 0.04,width: 0.3,),
+                        SizedBox(width: 30.w),
+                        MyText(text: (_isPlaying ? "Playing...." : "Play audio"), size: 60.sp, overflow: false, bold: false, color: Colors.black),
                       ],
                     ),
                   ) : Container(
-                    height: height * 0.1,
-                    width: width * 0.7,
+                    height: 200.h,
+                    width: 800.w,
                     color: Colors.transparent,
                   ),
-                  SizedBox(height: height * 0.03),
-                  const MyText(text: "Record Audio", size: 30,bold: true, color: Colors.white,height: 0.05,width: 1),
-                  SizedBox(height: height * 0.07),
+                  SizedBox(height: 300.h),
+                  MyText(text: "Record Audio", size: 70.sp, overflow: false, bold: true, color: Colors.white),
+                  SizedBox(height: 70.h),
                   GestureDetector(
                     onTap: (){
                       recordState = true;
@@ -393,8 +362,8 @@ Future<void> _playRecordedAudio() async {
                       setState(() {});
                     },
                     child: Container(
-                      height: height * 0.2,
-                      width: width * 0.2,
+                      height: 250.h,
+                      width: 250.w,
                       decoration: const BoxDecoration(
                         color: Colors.pink,
                         shape: BoxShape.circle,
@@ -403,7 +372,7 @@ Future<void> _playRecordedAudio() async {
                         child: Icon(
                           Icons.mic,
                           color: Colors.white,
-                          size: (width/Responsive.designWidth) * 50,
+                          size: 120.sp,
                         ),
                       ),
                     ),

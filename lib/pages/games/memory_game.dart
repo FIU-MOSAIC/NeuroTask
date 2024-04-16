@@ -1,13 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:camera/camera.dart';
-import 'package:device_screen_recorder/device_screen_recorder.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:neuro_task/constant/responsive.dart';
-import 'package:neuro_task/pages/splash_screen.dart';
 import 'package:neuro_task/providers/memory_game_functions.dart';
 import 'package:neuro_task/pages/homepage.dart';
 import 'package:flip_card/flip_card.dart';
@@ -68,23 +64,6 @@ class _MemoryGameState extends State<MemoryGame> {
   if (_isRecording) {
     final file = await _cameraController.stopVideoRecording();
     setState(() => _isRecording = false);
-    DateTime time = DateTime.now();
-    String fileNames = "Memory Game - 1001 - Camera Record Video - $patientemail - ${time.toString()}";
-    final destinationPaths = 'videos/$fileNames';
-
-    final firebase_storage.Reference storageReference = firebase_storage.FirebaseStorage.instance.ref(destinationPaths);
-
-      try {
-        await storageReference.putFile(File(file.path));
-        final downloadURL = await storageReference.getDownloadURL();
-        MemoryGameService.memoryGameVideoLink(downloadURL);
-        debugPrint('Video uploaded to Firebase Storage. Download URL: $downloadURL');
-        
-      } catch (e) {
-        debugPrint('Error uploading video to Firebase Storage: $e');
-      }
-
-
 
     final downloadDirectory = await getExternalStorageDirectory();
     if (downloadDirectory == null) {
@@ -119,37 +98,11 @@ _startRecord() async{
     // ignore: avoid_print
     print('starting..');
 }
-
-Future<void> startScreenRecording() async{
-  await DeviceScreenRecorder.startRecordScreen();
-}
-
-Future<void> stopScreenRecording() async{
-  var file = await DeviceScreenRecorder.stopRecordScreen();
-
-  DateTime time = DateTime.now();
-  String fileNames = "Memory Game - 1001 - Screen Record Video- $patientemail - ${time.toString()}";
-  final destinationPaths = 'videos/$fileNames';
-
-  final firebase_storage.Reference storageReference = firebase_storage.FirebaseStorage.instance.ref(destinationPaths);
-  
-  try {
-    File files = File(file.toString());
-    await storageReference.putFile(File(files.path));
-    final downloadURL = await storageReference.getDownloadURL();
-    MemoryGameService.memoryGameScreenVideoLink(downloadURL);
-    debugPrint('Video uploaded to Firebase Storage. Download URL: $downloadURL');
-  } catch (e) {
-      debugPrint('Error uploading video to Firebase Storage: $e');
-  }
-
-}
   
   
   @override
   void initState() {
     _initCamera();
-    startScreenRecording();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       MemoryGameStartMessage.startMessage(context);
     });
@@ -162,27 +115,22 @@ Future<void> stopScreenRecording() async{
     super.dispose();
   }
   
-  double screenHeight = 0.0,screenWidth = 0.0;
 
   @override
   Widget build(BuildContext context) {
-    double height = Responsive.screenHeight(context);
-    double width = Responsive.screenWidth(context);
-    screenHeight = height;
-    screenWidth = width;
     return SafeArea(
       child: Scaffold(
         body: GestureDetector(
           onTap:(){
             MemoryGameFunctions.findTime();
-            MemoryGameService.memoryGameDataFirebase('1001',patientId, MemoryGameFunctions.formattedTime, success, MemoryGameFunctions.screenPosition, 0, 0);
+            MemoryGameService.memoyGameData('1001',patientId, MemoryGameFunctions.formattedTime, success, MemoryGameFunctions.screenPosition, 0, 0);
           },
           onTapDown: (TapDownDetails details){
             MemoryGameFunctions.screenPositionValue(details, context);
           },
           child: Container(
-            height: height * 1,
-            width: width * 1,
+            height: double.maxFinite.h,
+            width: double.maxFinite.w,
             color: Colors.white,
             child: Column(
               children: [
@@ -193,16 +141,16 @@ Future<void> stopScreenRecording() async{
                         onPressed: (){
                           Get.to(const HomePage());
                        },
-                       child: Text("Back",
+                       child: const Text("Back",
                        style: TextStyle(
-                          fontSize: (width / Responsive.designWidth) * 30,
-                          color: const Color.fromARGB(166, 207, 207, 11),
+                          fontSize: 20,
+                          color: Color.fromARGB(166, 207, 207, 11),
                          ),
                        )
                        ),
-                     Container(
-                      height: height * 0.05,
-                      width: width * 0.1,
+                       Container(
+                      height: 100.h,
+                      width: 200.w,
                       color: Colors.white,
                       child: (_isLoading) ? const Center(
                         child: CircularProgressIndicator(),
@@ -211,8 +159,8 @@ Future<void> stopScreenRecording() async{
                       ),
                      ),
                      Container(
-                      height: height * 0.08,
-                      width: width * 0.08,
+                      height: 80.h,
+                      width: 80.w,
                       decoration: const BoxDecoration(
                         color: Colors.deepPurple,
                         shape: BoxShape.circle
@@ -221,29 +169,15 @@ Future<void> stopScreenRecording() async{
                         child: (_isRecording)?const Icon(Icons.stop,color: Colors.white,) : const Icon(Icons.fiber_manual_record,color: Colors.white),
                       ),
                      ),
-                     InkWell(
-                      onTap: (){
-                        MemoryGameStartMessage.startMessage(context);
-                      },
-                       child: Container(
-                        height: height * 0.05,
-                        width: width * 0.1,
-                        color: Colors.transparent,
-                        child: const FittedBox(
-                          child: Icon(CupertinoIcons.info,color: Color.fromARGB(166, 207, 207, 11),),
-                        ),
-                       ),
-                     ),
-                      TextButton(
+                       TextButton(
                         onPressed: (){
                           _stopRecord();
-                          stopScreenRecording();
                           Get.to(const HomePage());
                        },
-                       child: Text("Submit",
+                       child: const Text("Submit",
                        style: TextStyle(
-                            fontSize: (width/Responsive.designWidth) * 30,
-                            color: const Color.fromARGB(166, 207, 207, 11),
+                            fontSize: 20,
+                            color: Color.fromARGB(166, 207, 207, 11),
                             ),
                        )
                        ),
@@ -268,7 +202,7 @@ Future<void> stopScreenRecording() async{
                               if(cardCount==2){
                                 successCard();
                               }
-                              MemoryGameService.memoryGameDataFirebase('1001',patientId, MemoryGameFunctions.formattedTime, success,MemoryGameFunctions.screenPosition, 1, MemoryGameFunctions.cardPosition);
+                              MemoryGameService.memoyGameData('1001',patientId, MemoryGameFunctions.formattedTime, success,MemoryGameFunctions.screenPosition, 1, MemoryGameFunctions.cardPosition);
                             }
                           },
                           child: FlipCard( 
@@ -296,7 +230,7 @@ Future<void> stopScreenRecording() async{
                               if(cardCount==2){
                               successCard();
                               }
-                              MemoryGameService.memoryGameDataFirebase('1001',patientId, MemoryGameFunctions.formattedTime, success, MemoryGameFunctions.screenPosition, 2, MemoryGameFunctions.cardPosition);
+                              MemoryGameService.memoyGameData('1001',patientId, MemoryGameFunctions.formattedTime, success, MemoryGameFunctions.screenPosition, 2, MemoryGameFunctions.cardPosition);
                             }
                           },
                         child: FlipCard(
@@ -325,7 +259,7 @@ Future<void> stopScreenRecording() async{
                               if(cardCount==2){
                                successCard();
                               }
-                              MemoryGameService.memoryGameDataFirebase('1001',patientId, MemoryGameFunctions.formattedTime, success, MemoryGameFunctions.screenPosition, 3, MemoryGameFunctions.cardPosition); 
+                              MemoryGameService.memoyGameData('1001',patientId, MemoryGameFunctions.formattedTime, success, MemoryGameFunctions.screenPosition, 3, MemoryGameFunctions.cardPosition); 
                             }
                           },
                         child: FlipCard(
@@ -358,7 +292,7 @@ Future<void> stopScreenRecording() async{
                               if(cardCount==2){
                               successCard();
                               }
-                              MemoryGameService.memoryGameDataFirebase('1001',patientId, MemoryGameFunctions.formattedTime, success, MemoryGameFunctions.screenPosition, 4, MemoryGameFunctions.cardPosition);
+                              MemoryGameService.memoyGameData('1001',patientId, MemoryGameFunctions.formattedTime, success, MemoryGameFunctions.screenPosition, 4, MemoryGameFunctions.cardPosition);
                             }
                           },
                         child: FlipCard(
@@ -386,7 +320,7 @@ Future<void> stopScreenRecording() async{
                               if(cardCount==2){
                               successCard();
                               }
-                              MemoryGameService.memoryGameDataFirebase('1001',patientId, MemoryGameFunctions.formattedTime, success, MemoryGameFunctions.screenPosition, 5, MemoryGameFunctions.cardPosition);
+                              MemoryGameService.memoyGameData('1001',patientId, MemoryGameFunctions.formattedTime, success, MemoryGameFunctions.screenPosition, 5, MemoryGameFunctions.cardPosition);
                             }
                           },
                         child: FlipCard(
@@ -414,7 +348,7 @@ Future<void> stopScreenRecording() async{
                               if(cardCount==2){
                               successCard();
                               }
-                              MemoryGameService.memoryGameDataFirebase('1001',patientId, MemoryGameFunctions.formattedTime, success, MemoryGameFunctions.screenPosition, 6, MemoryGameFunctions.cardPosition);
+                              MemoryGameService.memoyGameData('1001',patientId, MemoryGameFunctions.formattedTime, success, MemoryGameFunctions.screenPosition, 6, MemoryGameFunctions.cardPosition);
                             }
                           },
                         child: FlipCard(
@@ -447,7 +381,7 @@ Future<void> stopScreenRecording() async{
                               if(cardCount==2){
                               successCard();
                              }
-                             MemoryGameService.memoryGameDataFirebase('1001',patientId, MemoryGameFunctions.formattedTime, success, MemoryGameFunctions.screenPosition, 7, MemoryGameFunctions.cardPosition);
+                             MemoryGameService.memoyGameData('1001',patientId, MemoryGameFunctions.formattedTime, success, MemoryGameFunctions.screenPosition, 7, MemoryGameFunctions.cardPosition);
                             }
                           },
                         child: FlipCard(
@@ -475,7 +409,7 @@ Future<void> stopScreenRecording() async{
                               if(cardCount==2){
                               successCard();
                               }
-                              MemoryGameService.memoryGameDataFirebase('1001',patientId, MemoryGameFunctions.formattedTime, success, MemoryGameFunctions.screenPosition, 8, MemoryGameFunctions.cardPosition);
+                              MemoryGameService.memoyGameData('1001',patientId, MemoryGameFunctions.formattedTime, success, MemoryGameFunctions.screenPosition, 8, MemoryGameFunctions.cardPosition);
                             }
                           },
                         child: FlipCard(
@@ -503,7 +437,7 @@ Future<void> stopScreenRecording() async{
                               if(cardCount==2){
                               successCard();
                               }
-                              MemoryGameService.memoryGameDataFirebase('1001',patientId, MemoryGameFunctions.formattedTime, success, MemoryGameFunctions.screenPosition, 9, MemoryGameFunctions.cardPosition);
+                              MemoryGameService.memoyGameData('1001',patientId, MemoryGameFunctions.formattedTime, success, MemoryGameFunctions.screenPosition, 9, MemoryGameFunctions.cardPosition);
                             }  
                         },
                         child: FlipCard(
@@ -536,7 +470,7 @@ Future<void> stopScreenRecording() async{
                               if(cardCount==2){
                               successCard();
                               }
-                              MemoryGameService.memoryGameDataFirebase('1001',patientId, MemoryGameFunctions.formattedTime, success, MemoryGameFunctions.screenPosition, 10, MemoryGameFunctions.cardPosition);
+                              MemoryGameService.memoyGameData('1001',patientId, MemoryGameFunctions.formattedTime, success, MemoryGameFunctions.screenPosition, 10, MemoryGameFunctions.cardPosition);
                             }
                           },
                         child: FlipCard(
@@ -564,7 +498,7 @@ Future<void> stopScreenRecording() async{
                               if(cardCount==2){
                               successCard();
                               }
-                              MemoryGameService.memoryGameDataFirebase('1001',patientId, MemoryGameFunctions.formattedTime, success, MemoryGameFunctions.screenPosition, 11, MemoryGameFunctions.cardPosition);
+                              MemoryGameService.memoyGameData('1001',patientId, MemoryGameFunctions.formattedTime, success, MemoryGameFunctions.screenPosition, 11, MemoryGameFunctions.cardPosition);
                             }
                           },
                         child: FlipCard(
@@ -592,7 +526,7 @@ Future<void> stopScreenRecording() async{
                               if(cardCount==2){
                               successCard();
                               }
-                              MemoryGameService.memoryGameDataFirebase('1001',patientId, MemoryGameFunctions.formattedTime, success, MemoryGameFunctions.screenPosition, 12, MemoryGameFunctions.cardPosition);
+                              MemoryGameService.memoyGameData('1001',patientId, MemoryGameFunctions.formattedTime, success, MemoryGameFunctions.screenPosition, 12, MemoryGameFunctions.cardPosition);
                             }
                           },
                         child: FlipCard(
@@ -652,22 +586,21 @@ Future<void> stopScreenRecording() async{
   }
    Widget customCard(String path){
     return Container(
-        margin: EdgeInsets.only(top: screenHeight * 0.01),
-        height: screenHeight * 0.2,
-        width: screenWidth * 0.3,  
+        margin: EdgeInsets.only(top:40.h),
+        height: 450.h,
+        width: 300.w,  
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: Colors.transparent,
-          borderRadius: BorderRadius.all(Radius.circular((screenWidth/Responsive.designWidth) * 20)),
+          borderRadius: BorderRadius.all(Radius.circular(30.sp)),
           border: Border.all(
-            width: screenWidth * 0.005,
+            width: 5.sp,
           )
         ),
         child: Image(
-          height: screenHeight * 0.13,
-          width: screenWidth * 0.23,
-          image: AssetImage(path),
-          fit: BoxFit.cover,
+          height: 350.h,
+          width: 350.w,
+          image: AssetImage(path)
         ),
     );
   }

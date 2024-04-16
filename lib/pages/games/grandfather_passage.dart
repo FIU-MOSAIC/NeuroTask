@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:neuro_task/constant/my_text.dart';
-import 'package:neuro_task/constant/responsive.dart';
 import 'package:neuro_task/ui/game/grandfather_recording.dart';
-import 'package:neuro_task/ui/game/grandfatherpassage_start_message.dart';
 
 class GrandFatherPassage extends StatefulWidget {
   const GrandFatherPassage({super.key});
@@ -18,19 +17,17 @@ class _GrandFatherPassageState extends State<GrandFatherPassage> {
 
   @override
   Widget build(BuildContext context) {
-    double height = Responsive.screenHeight(context);
-    double width = Responsive.screenWidth(context);
     return SafeArea(
       child: Scaffold(
         body: Container(
-          height: height * 1,
-          width: width * 1,
+          height: double.maxFinite.h,
+          width: double.maxFinite.w,
           color: const  Color.fromARGB(255, 43, 43, 43),
           child: (isStart) ? const GrandFatherRecording()
            : Center(
             child: Container(
-              height: height * 0.8,
-              width: width * 1,
+              height: 1000.h,
+              width: 700.w,
               color: Colors.transparent,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -39,21 +36,17 @@ class _GrandFatherPassageState extends State<GrandFatherPassage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      InkWell(
-                        onTap: (){
-                          GrandFatherStartMessage.startMessage(context);
-                        },
-                        child: const MyText(text: "Instruction", size: 30, bold: true, color: Colors.white,height: 0.05,width: 0.3)),
+                      MyText(text: "Instruction", size: 80.sp, overflow: false, bold: true, color: Colors.white),
                       Icon(
                         CupertinoIcons.speaker_2_fill,
-                        size:  width * 0.08,
+                        size: 100.sp,
                         color: Colors.white,
                       ),
                     ],
                   ),
-                  SizedBox(height: height * 0.1),
-                  const MyText(text: "Read the passage loudly", size:30, bold: false, color: Colors.white,height: 0.05,width: 0.7,),
-                  SizedBox(height: height * 0.1),
+                  SizedBox(height: 100.h),
+                  MyText(text: "Read the passage loudly", size: 60.sp, overflow: false, bold: false, color: Colors.white),
+                  SizedBox(height: 100.h),
                   ElevatedButton(
                     onPressed: (){
                       isStart = true;
@@ -63,8 +56,8 @@ class _GrandFatherPassageState extends State<GrandFatherPassage> {
                       backgroundColor: MaterialStatePropertyAll(Colors.pink),
                     ),
                     child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: height * 0.015,horizontal: width * 0.08),
-                      child: const MyText(text: "Begin Test", size: 30,bold: true, color: Colors.white,height: 0.05,width: 0.2,)),
+                      padding: EdgeInsets.symmetric(vertical: 30.h,horizontal: 70.w),
+                      child: MyText(text: "Begin Test", size: 50.sp, overflow: false, bold: true, color: Colors.white)),
                   ),
                 ],
               ),

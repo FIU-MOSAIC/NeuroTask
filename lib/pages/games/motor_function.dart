@@ -15,6 +15,7 @@ import 'package:screenshot/screenshot.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'flutter_sensors.dart';
 import 'package:dart_numerics/dart_numerics.dart';
+
 /*
 The purpose of this file is to create the circle game.
 The circle game allows the user to draw free-hand the outline of a circle
@@ -271,7 +272,6 @@ class _MotorFunctionState extends State<MotorFunction> {
       accelerometerDir[0] = -1*event.x;
       accelerometerDir[1] = event.y;
       accelerometerDir[2] = event.z;
-
 
     });
     });

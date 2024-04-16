@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:neuro_task/constant/my_text.dart';
 import 'package:neuro_task/providers/memory_game_functions.dart';
 import 'package:neuro_task/pages/homepage.dart';
@@ -10,7 +11,7 @@ class MemoryGameStartMessage{
       context: context, 
       builder: (context) {
         return AlertDialog(
-          title: const MyText(text: "Memory Game", size: 20, bold: true, color: Colors.black,height: 0.05,width: 1),
+          title: MyText(text: "Memory Game", size: 50.sp, overflow: false, bold: true, color: Colors.black),
           actions: [
             TextButton(
               onPressed: (){
@@ -18,7 +19,7 @@ class MemoryGameStartMessage{
                 GameInfo.gameInfo(patientId.toString(), email.toString(), MemoryGameFunctions.formattedTime, '1001', 'Memory Game');
                 Navigator.pop(context);
               }, 
-              child: const MyText(text: "OK", size: 20, bold: false, color: Colors.deepPurple,height: 0.05,width: 0.05,),
+              child: MyText(text: "OK", size: 40.sp, overflow: false, bold: false, color: Colors.deepPurple),
             ),
           ],
         );

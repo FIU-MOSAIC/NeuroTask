@@ -1,8 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:neuro_task/constant/my_icon.dart';
 import 'package:neuro_task/constant/my_text.dart';
-import 'package:neuro_task/constant/responsive.dart';
 import 'package:neuro_task/pages/authentication/sign_up.dart';
 import 'package:neuro_task/services/login_service.dart';
 import 'package:neuro_task/ui/text_field.dart';
@@ -17,128 +17,68 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
 
   TextEditingController email = TextEditingController();
-  TextEditingController resetEmail = TextEditingController();
   TextEditingController password = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    double height = Responsive.screenHeight(context);
-    double width = Responsive.screenWidth(context);
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         body: Container(
-          height: height * 1,
-          width: width * 1,
+          height: double.maxFinite.h,
+          width: double.maxFinite.w,
           decoration: const BoxDecoration(
             color: Colors.white,
             image: DecorationImage(
-              image: AssetImage("assets/images/login.jpg"),
+              image: AssetImage("assets/images/login_image.jpg"),
               fit: BoxFit.fill,
             ),
           ),
           child: Column(
             children: [
-              SizedBox(height: height * 0.25),
-              const MyText(text: "Welcome To Neuro Task", size: 30, bold: true, color: Colors.blue,height: 0.05,width: 1),
-              SizedBox(height:height * 0.01),
-              MyTextField(width: 0.85, text: "Email", icon: Icons.mail, controller: email, check: false),
-              SizedBox(height: height * 0.01),
-              MyTextField(width: 0.85, text: "Password", icon: Icons.key, controller: password, check: true),
-              SizedBox(height: height * 0.01),
-              InkWell(
-                onTap: (){
-                  setState(() {
-                    LoginService().firebaseLogin(email.text, password.text).whenComplete((){
-                      setState(() {
-                        
-                      });
-                    });
-                  });
-                },
-                child: Container(
-                  height: height * 0.06,
-                  width: width * 0.83,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: Colors.lightBlue,
-                    borderRadius: BorderRadius.all(Radius.circular((width/Responsive.designWidth) * 50))
-                  ),
-                  child: (LoginService.isLoading) ? const Center(child: CircularProgressIndicator(color: Colors.white,)) :
-                  const MyText(text: "Login", size: 30, bold: false, color: Colors.white,height: 0.04,width: 0.2),
-                ),
-              ),
-              SizedBox(height:height * 0.005),
-              TextButton(
+              SizedBox(height:700.h),
+              MyText(text: "Welcome To Neuro Task", size: 80.sp, overflow: false, bold: true, color: Colors.white),
+              SizedBox(height:300.h),
+              MyTextField(width: 800, text: "Email", icon: Icons.mail, controller: email, check: false),
+              SizedBox(height:50.h),
+              MyTextField(width: 800, text: "Password", icon: Icons.key, controller: password, check: true),
+              SizedBox(height:80.h),
+              ElevatedButton(
                 onPressed: (){
-                  Get.defaultDialog(
-                    title:  "Reset Your Password",
-                    content: Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: width * 0.04),
-                          child: MyTextField(width: 0.7, text: "Enter Your Email", icon: Icons.email, controller: resetEmail, check: false)),
-                      ],
-                    ),
-                    confirm: TextButton(
-                      onPressed: (){
-                        if(resetEmail.text.isEmpty){
-                           Get.snackbar(
-                              "Neuro Task",
-                              "Please enter your email and try again",
-                              snackPosition: SnackPosition.TOP,
-                            );
-                          Navigator.pop(context);
-                        }
-                        else{
-                          FirebaseAuth.instance.sendPasswordResetEmail(email: resetEmail.text.toString()).then((value){
-                            Get.snackbar(
-                              "Neuro Task",
-                              "We have send you a email to reset password. Please check it.",
-                              snackPosition: SnackPosition.TOP,
-                            );
-                            Navigator.pop(context);
-                            resetEmail.clear();
-                          }).onError((error, stackTrace){
-                            Get.snackbar(
-                              "Neuro Task", 
-                              "Server is busy",
-                              snackPosition: SnackPosition.TOP
-                            );
-                          });
-                        }
-                      }, 
-                      child: const MyText(text: "Send", size: 20,bold: false, color: Colors.green,height: 0.05,width: 1,), 
-                    ),
-                    cancel: TextButton(
-                      onPressed: (){
-                        Navigator.pop(context);
-                      }, 
-                      child: const MyText(text: "Cancel", size: 20, bold: false, color: Colors.red,height: 0.05,width: 1,), 
-                    ),
-                  );
+                  LoginService().login(email.text, password.text);
                 }, 
-                child: const MyText(text: "Forgot Password?", size: 20, bold: true, color: Colors.green,height: 0.04,width: 0.6,),
+                style:ButtonStyle(
+                  shape: MaterialStatePropertyAll(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(30.sp)),
+                   ),
+                  ),
+                  backgroundColor: const MaterialStatePropertyAll(Colors.lightBlue),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 280.w,vertical: 40.h),
+                  child: MyText(text: "Login", size: 60.sp, overflow: false, bold: false, color: Colors.white)),
               ),
+              SizedBox(height:20.h),
               TextButton(
                 onPressed: (){
                   Get.to(const SignUp());
                 }, 
-                child: const MyText(text: "Don't have any account? Signup", size: 20, bold: false, color: Colors.deepPurple,height: 0.04,width: 0.7,),
+                child: MyText(text: "Don't have any account? Signup", size: 55.sp, overflow: false, bold: false, color: Colors.deepPurple),
               ),
-              //SizedBox(height: height * 0.005),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              //   crossAxisAlignment: CrossAxisAlignment.center,
-              //   children: [
-              //     MyIcon(icon: Icons.local_hospital, color: Colors.lightBlue, size: 90.sp),
-              //     MyIcon(icon: Icons.medical_information, color: Colors.lightBlue, size: 90.sp),
-              //     MyIcon(icon: Icons.mobile_screen_share, color: Colors.lightBlue, size: 90.sp),
-              //   ],
-              // ),
-              //SizedBox(height:height * 0.005),
-              const MyText(text: " Neuro Task - 2023  © copyright Mosaic Lab", size: 20, bold: false, color: Colors.black,height: 0.05,width: 0.8,),
-              //SizedBox(height:height * 0.01),
+              SizedBox(height:70.h),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  MyIcon(icon: Icons.local_hospital, color: Colors.lightBlue, size: 90.sp),
+                  MyIcon(icon: Icons.medical_information, color: Colors.lightBlue, size: 90.sp),
+                  MyIcon(icon: Icons.mobile_screen_share, color: Colors.lightBlue, size: 90.sp),
+                ],
+              ),
+              SizedBox(height:40.h),
+              MyText(text: " Neuro Task - 2023  © copyright Mosaic Lab", size: 40.sp, overflow: false, bold: false, color: Colors.black),
+              SizedBox(height:20.h),
             ],
           ),
         ),

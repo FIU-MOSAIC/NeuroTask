@@ -58,6 +58,10 @@ dependencies:
   path: ^1.8.3
   http: ^1.1.0
   get: ^4.6.5
+  sensors_plus: ^4.0.2
+  dio: ^5.4.3+1
+  all_sensors: ^0.4.2
+  dart_numerics: ^0.0.6
   
   
 
