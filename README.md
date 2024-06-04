@@ -52,7 +52,7 @@ To run the project successfully, you need to follow these steps:
 - First, go to github repository download project as a zip file.
 - Then, extract the project.
 - After that, open project in your IDE.
-- Now, run 'flutter pub get' interminal to resolve dependency and run 'flutter run' to run flutter app.
+- Now, run 'flutter pub get' in terminal to resolve dependency and run 'flutter run' to run flutter app.
 - If it shows some errors related to flutter sdk, then run 'flutter upgrade' command into terminal. Then run 'flutter run' command again.
   
    
