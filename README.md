@@ -44,7 +44,7 @@ To run the project successfully, you need to follow these steps:
 ## Step 5 : Open android studio / VsCode
 --------------------------------------
   
- -  If you want to use VsCode then intstall flutter, dart plugin from VsCode extension.
+ -  If you want to use VsCode then intstall flutter, dart plugin from VSCode extension.
  -  Run flutter doctor in Android studio / VsCode terminal to check for any dependencies you need to install.
   
 ## Step 6 : Download flutter project from github
